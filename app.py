@@ -489,7 +489,22 @@ def login(page):
             log("❌ 登录失败。")
             page.screenshot(path="login_fail.png")
             return False
-        log(f"✅ 账号密码登录成功！当前已到达dashboard页面")
+
+        # 如果停留在 reauthenticate 二次确认页面，输入密码通过它
+        if "reauth" in page.url.lower():
+            log("🛡️ 检测到处于 Reauth 二次验证页面，输入密码确认...")
+            try:
+                r_pwd = page.locator('input[type="password"]').first
+                if r_pwd.is_visible():
+                    r_pwd.fill(PASSWORD)
+                    time.sleep(1)
+                    r_btn = page.locator('button[type="submit"], button:has-text("Confirm"), button:has-text("Submit")').first
+                    r_btn.click()
+                    time.sleep(4)
+            except Exception as e:
+                log(f"Reauth 处理提示: {e}")
+
+        log(f"✅ 账号密码登录成功！当前已到达系统页面")
         return True
     except Exception as e:
         log(f"❌ 登录异常: {e}")
@@ -497,6 +512,9 @@ def login(page):
         return False
 
 def get_server_id(page):
+    if SERVER_ID:
+        log(f"✅ 使用指定的目标 Server ID: {SERVER_ID}")
+        return SERVER_ID
     try:
         solve_turnstile(page, timeout=60, success_check=page_ready, reload_after=8)
         time.sleep(3)
