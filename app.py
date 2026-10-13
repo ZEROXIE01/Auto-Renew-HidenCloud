@@ -408,32 +408,11 @@ def solve_turnstile(page, timeout=120, success_check=None,
     return False
 
 def login(page):
-    # 1. Cookie 登录尝试
-    if COOKIE_VALUE:
-        log("📇 尝试 Cookie 登录...")
-        try:
-            page.context.add_cookies([{
-                'name': 'remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d',
-                'value': COOKIE_VALUE,
-                'domain': 'dash.hidencloud.com',
-                'path': '/',
-                'expires': int(time.time()) + 3600 * 24 * 365,
-                'httpOnly': True,
-                'secure': True,
-                'sameSite': 'Lax'
-            }])
-            page.goto(f"{BASE_URL}/dashboard", wait_until="domcontentloaded", timeout=60000)
-            solve_turnstile(page, timeout=90, success_check=page_ready, reload_after=8)
-            page_title = page.title()
-            log(f"📝 当前Title: {page_title}")
-            if "auth/login" not in page.url:
-                log(f"✅ Cookie 登录成功！当前已到达dashboard页面")
-                return True
-            log("❌ Cookie 失效，请更换")
-        except:
-            pass
-
-    # 2. 账号密码登录
+    # 彻底弃用 Cookie，直接纯账号密码原生登录
+    if not EMAIL or not PASSWORD:
+        log("❌ 未配置 EMAIL 或 PASSWORD 账号密码！")
+        return False
+    log(f"🔑 正在使用纯账号密码直接登录: {EMAIL} ...")
     if not EMAIL or not PASSWORD:
         return False
     log("💣 尝试账号密码登录...")
