@@ -14,6 +14,8 @@ PASSWORD     = os.environ.get('PASSWORD') or ""        # 登录密码,可选，�
 TG_CHAT_ID   = os.environ.get('TG_CHAT_ID') or ""      # Telegram Chat ID,可选，通知
 TG_BOT_TOKEN = os.environ.get('TG_BOT_TOKEN') or ""    # Telegram Bot Token,可选
 
+SERVER_ID = "231012"
+SERVICE_URL = f"https://dash.hidencloud.com/service/{SERVER_ID}/manage"
 BASE_URL = "https://dash.hidencloud.com"
 LOGIN_URL = f"{BASE_URL}/auth/login"
 
